@@ -26,7 +26,7 @@ class TransparentWin(tk.Tk):
 		# It ranges from 0.0 (completely transparent) to 1.0 (completely opaque).
 		self.attributes("-transparentcolor", '#F0F')
 		self.attributes("-topmost", 1)
-		self.attributes("-alpha", 0.3)
+		self.attributes("-alpha", 0.5)
 		self.config(bg='#F0F')
 
 		# The windows overall position on the screen
@@ -49,10 +49,13 @@ class TransparentWin(tk.Tk):
 		# Get window style and perform a 'bitwise or' operation to make the style layered and transparent, achieving
 		# the clickthrough property
 		hwnd = canvas.winfo_id()
-		styles = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
-		styles |= win32con.WS_EX_LAYERED | win32con.WS_EX_TRANSPARENT
-		win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, styles)
-		win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(255,0,255), 255, win32con.LWA_COLORKEY)
+		try:
+			styles = win32gui.GetWindowLong(hwnd, win32con.GWL_EXSTYLE)
+			styles |= win32con.WS_EX_LAYERED | win32con.WS_EX_TRANSPARENT
+			win32gui.SetWindowLong(hwnd, win32con.GWL_EXSTYLE, styles)
+			win32gui.SetLayeredWindowAttributes(hwnd, win32api.RGB(255,0,255), 255, win32con.LWA_COLORKEY)
+		except Exception as e:
+			print(e)
 
 	def exit(self, event):
 		self.destroy()
@@ -68,7 +71,6 @@ class TransparentWin(tk.Tk):
 
 def __run__():
 	TransparentWin().mainloop()
-
 
 if __name__ == '__main__':
 	__run__()
